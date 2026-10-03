@@ -8,4 +8,5 @@ banner:
   src:
     desktop: []
     mobile: []
-favicon: []
+favicon:
+  - src: /favicon.svg
