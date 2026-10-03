@@ -2,6 +2,8 @@
 
 基于 Shirone 的静态博客主题工程，采用组件化设计与内容分离架构，支持 Markdown/MDX 渲染、静态全文搜索、响应式图片和页面切换。
 
+[在线演示](https://yufu0u-blog-qogjsurz.edgeone.dev/)
+
 ## 技术栈
 
 | 层级 | 技术 |
