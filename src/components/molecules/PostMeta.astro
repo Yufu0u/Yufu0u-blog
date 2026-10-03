@@ -1,0 +1,128 @@
+---
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import { formatDateToYYYYMMDD } from "@utils/date-utils";
+import { getCategoryUrl, getTagUrl } from "@utils/url-utils";
+import PostMetadata from "@components/atoms/blog/PostMeta.astro";
+
+interface Props {
+	class?: string;
+	published: Date;
+	updated?: Date;
+	tags: string[];
+	category: string | null;
+	hideUpdateDate?: boolean;
+}
+
+const {
+	class: className,
+	published,
+	updated,
+	tags,
+	category,
+	hideUpdateDate = false,
+} = Astro.props;
+
+const categoryLink = category
+	? { name: category, href: getCategoryUrl(category) }
+	: null;
+const tagLinks = tags.map((tag) => ({ name: tag.trim(), href: getTagUrl(tag) }));
+---
+
+<div class:list={["post-meta-with-toc", className]}>
+	<PostMetadata
+		published={formatDateToYYYYMMDD(published)}
+		updated={updated ? formatDateToYYYYMMDD(updated) : undefined}
+		category={categoryLink}
+		tags={tagLinks}
+		hideUpdate={hideUpdateDate}
+		uncategorizedLabel={i18n(I18nKey.uncategorized)}
+		noTagsLabel={i18n(I18nKey.noTags)}
+	/>
+	<button
+		class="post-toc-toggle"
+		type="button"
+		aria-label="打开文章目录"
+		aria-controls="floating-toc-panel"
+		aria-expanded="false"
+	>
+		<span class="post-toc-toggle__icon" aria-hidden="true">☷</span>
+		<span>文章目录</span>
+	</button>
+</div>
+
+<style lang="stylus">
+:global(widget-layout[data-id="toc-inner-wrapper"])
+	display: none !important
+
+.post-meta-with-toc
+	display: flex
+	flex-wrap: wrap
+	align-items: center
+	gap: var(--m3e-space-2)
+
+.post-toc-toggle
+	display: inline-flex
+	align-items: center
+	justify-content: center
+	gap: var(--m3e-space-1)
+	min-height: 2rem
+	padding: 0 var(--m3e-space-3)
+	border: 1px solid var(--outline-variant)
+	border-radius: var(--shape-corner-full)
+	background: var(--surface-container)
+	color: var(--on-surface-variant)
+	font: var(--m3e-type-label-large)
+	cursor: pointer
+	transition: background-color var(--m3e-duration-short), color var(--m3e-duration-short)
+
+	&:hover,
+	&[aria-expanded="true"]
+		background: var(--secondary-container)
+		color: var(--on-secondary-container)
+
+	&__icon
+		font-size: 1.125rem
+		line-height: 1
+</style>
+
+<script>
+	(() => {
+		const syncTocToggle = () => {
+			const panel = document.getElementById("floating-toc-panel");
+			if (!panel) return;
+			const open = panel.classList.contains("is-open");
+			document.querySelectorAll<HTMLButtonElement>(".post-toc-toggle").forEach((button) => {
+				button.setAttribute("aria-expanded", String(open));
+				button.setAttribute("aria-label", open ? "关闭文章目录" : "打开文章目录");
+			});
+		};
+
+		const bind = () => {
+			document.querySelectorAll<HTMLButtonElement>(".post-toc-toggle").forEach((button) => {
+				if (button.dataset.postTocBound) return;
+				button.dataset.postTocBound = "true";
+				button.addEventListener("click", (event) => {
+					event.stopPropagation();
+					document.getElementById("fab-toc-btn")?.dispatchEvent(
+						new MouseEvent("click", { bubbles: true }),
+					);
+				});
+			});
+
+			const panel = document.getElementById("floating-toc-panel");
+			if (panel && !panel.dataset.postTocObserved) {
+				panel.dataset.postTocObserved = "true";
+				new MutationObserver(syncTocToggle).observe(panel, {
+					attributes: true,
+					attributeFilter: ["class"],
+				});
+			}
+			syncTocToggle();
+		};
+
+		bind();
+		window.addEventListener("load", bind, { once: true });
+		document.addEventListener("swup:content:replace", bind);
+	})();
+</script>

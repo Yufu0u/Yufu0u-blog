@@ -1,0 +1,11 @@
+site: https://example.com/
+title: Shirone
+subtitle: ""
+lang: zh_CN
+wallpaperMode:
+  defaultMode: none
+banner:
+  src:
+    desktop: []
+    mobile: []
+favicon: []

@@ -1,0 +1,7 @@
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: true
+  sharp: true
+  swup: false
+overrides:
+  serialize-javascript: 7.0.5
