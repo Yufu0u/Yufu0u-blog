@@ -2,7 +2,7 @@
   "name": "yufu0u-blog",
   "type": "module",
   "version": "1.0.3",
-  "description": "An expressive, anime-inspired blog theme built on Material 3 Expressive, Astro 7, and Svelte 5",
+  "description": "A static blog theme built with Astro, Svelte, TypeScript and Tailwind CSS, featuring Markdown/MDX and separated content.",
   "license": "MIT",
   "repository": {
     "type": "git",

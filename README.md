@@ -1,9 +1,25 @@
-# Yufu0u-blog
+# Static Blog Theme
 
-[博客](https://yufu0u-blog-qogjsurz.edgeone.dev/) · [Shirone 上游](https://github.com/LyraVoid/Shirone)
+基于 Shirone 的静态博客主题工程，采用组件化设计与内容分离架构，支持 Markdown/MDX 渲染、静态全文搜索、响应式图片和页面切换。
 
-基于 Shirone 的公开主题工程，采用 Astro 7、Svelte 5、TypeScript 6、Tailwind CSS 4 与 Material 3 Expressive。文章由 Markdown/MDX 驱动，Pagefind 提供静态全文搜索，Sharp 处理图片，Swup 提供页面切换，EdgeOne Pages 托管静态构建。
+## 技术栈
 
-使用 Node.js 24 和 pnpm 11.25.0。主题源码基于上游提交 `616cbdfadd43bf11711f993fdb0b499196cd83bd`，保留本地页面调整与可关闭的悬浮文章目录。
+| 层级 | 技术 |
+| --- | --- |
+| 静态站点框架 | Astro 7 |
+| 交互组件 | Svelte 5 |
+| 类型系统 | TypeScript 6 |
+| 样式与设计 | Tailwind CSS 4、Material 3 Expressive |
+| 内容与配置 | Markdown、MDX、YAML |
+| 全文搜索 | Pagefind |
+| 图片处理 | Sharp、Astro Assets |
+| 页面切换 | Swup |
+| 运行环境与包管理 | Node.js 24、pnpm 11.25.0 |
 
-采用双仓架构：本仓库存放主题代码和中性预览示例；个人文章、YAML 配置覆盖、数据和媒体由独立私有内容仓库提供。公开 CI 仅使用中性示例。许可证为 MIT，上游版权声明保留于 [LICENSE](LICENSE)。
+## 架构
+
+主题代码与内容源独立管理，通过配置覆盖和构建期同步生成静态站点。持续集成使用中性示例进行类型检查、构建和产物验证。
+
+## 许可证
+
+主题基于 [Shirone](https://github.com/LyraVoid/Shirone)，采用 [MIT License](LICENSE)。第三方版权信息见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
