@@ -82,5 +82,5 @@ src/user/
 src/assets/*
 !src/assets/fonts/
 src/config/FooterConfig.html
-public/
+/public/
 *.local.md
