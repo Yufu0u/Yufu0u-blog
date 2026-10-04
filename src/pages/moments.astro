@@ -1,12 +1,13 @@
 ---
 import { getImage } from "astro:assets";
 import MomentSection from "@components/organisms/MomentSection.svelte";
+import CommentSection from "@components/organisms/comment/CommentSection.astro";
 import I18nKey from "@i18n/i18nKey";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { resolveImageAsset } from "@utils/asset-utils";
 import { getSortedMoments } from "@utils/content-utils";
 import { url } from "@utils/url-utils";
-import { momentsConfig, profileConfig } from "@/config";
+import { momentsConfig, profileConfig, siteConfig } from "@/config";
 import { resolveI18nText } from "@utils/i18n-utils";
 
 if (!momentsConfig.enable) {
@@ -53,4 +54,5 @@ const author = {
 
 <MainGridLayout title={pageTitle} description={pageDescription} page="moments">
     <MomentSection {moments} {author} title={pageTitle} subtitle={pageDescription} client:visible></MomentSection>
+    <CommentSection context={{ key: "moments", path: "/moments/", title: pageTitle, language: siteConfig.lang }} />
 </MainGridLayout>
