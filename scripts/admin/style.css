@@ -107,6 +107,7 @@ h3 { font-size:16px; }
 .nav-count { margin-left:auto; font-size:11px; opacity:.7; }
 .sidebar-bottom { margin-top:auto; padding-top:32px; }
 .sidebar .mobile-close { display:none; }
+.sidebar nav { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; }
 .local-note { padding:14px 16px; font-size:12px; color:var(--on-surface-variant); border-radius:16px; border:1px solid color-mix(in srgb,var(--outline-variant) 60%,transparent); }
 .local-note small { display:block; margin-left:14px; font-size:11px; opacity:.7; }
 .dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--primary); margin-right:7px; vertical-align:middle; }
