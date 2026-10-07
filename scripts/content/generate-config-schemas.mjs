@@ -99,7 +99,7 @@ function generateSchemaForDomain(program, domain) {
 
 		// Union 类型
 		if (type.isUnion()) {
-			const subSchemas = type.types.map((t) => typeToJsonSchema(t, new Set(visited)));
+			const subSchemas = type.types.filter((t) => !(t.getFlags() & ts.TypeFlags.Undefined)).map((t) => typeToJsonSchema(t, new Set(visited)));
 			// 优化 boolean union (true | false)
 			const isBoolUnion =
 				subSchemas.length === 2 &&
@@ -177,21 +177,25 @@ function generateSchemaForDomain(program, domain) {
 	};
 }
 
+export function createConfigSchemas() {
+	const configPath = ts.findConfigFile(ROOT, ts.sys.fileExists, "tsconfig.json");
+	const configFile = ts.readConfigFile(configPath, ts.sys.readFile);
+	const parsed = ts.parseJsonConfigFileContent(configFile.config, ts.sys, ROOT);
+	const program = ts.createProgram(parsed.fileNames, parsed.options);
+	return Object.fromEntries(CONFIG_DOMAINS.map(domain => [domain.file, generateSchemaForDomain(program, domain)]).filter(([, schema]) => schema));
+}
+
 export function generateConfigSchemas() {
 	if (!existsSync(SCHEMAS_DIR)) {
 		mkdirSync(SCHEMAS_DIR, { recursive: true });
 	}
 
-	const configPath = ts.findConfigFile(ROOT, ts.sys.fileExists, "tsconfig.json");
-	const configFile = ts.readConfigFile(configPath, ts.sys.readFile);
-	const parsed = ts.parseJsonConfigFileContent(configFile.config, ts.sys, ROOT);
-
-	const program = ts.createProgram(parsed.fileNames, parsed.options);
+	const schemas = createConfigSchemas();
 
 	const schemaMappings = {};
 
 	for (const domain of CONFIG_DOMAINS) {
-		const schema = generateSchemaForDomain(program, domain);
+		const schema = schemas[domain.file];
 		if (!schema) continue;
 
 		const fileName = `${domain.file}.schema.json`;

@@ -22,6 +22,8 @@
 
 主题代码与内容源独立管理，通过配置覆盖和构建期同步生成静态站点。持续集成使用中性示例进行类型检查、构建和产物验证。
 
+支持本机可视化管理后台：配置独立内容目录后运行 `pnpm admin`，管理文章、瞬间、图片、站点介绍、页面文字、导航、侧栏开关与部署暂停/锁定。后台沿用主题的 Material 3 动态配色，仅在本机运行；配置和内容一起检查、备份与 Git 发布。详见 [后台说明](scripts/admin/README.md)。
+
 ## 许可证
 
 主题基于 [Shirone](https://github.com/LyraVoid/Shirone)，采用 [MIT License](LICENSE)。第三方版权信息见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

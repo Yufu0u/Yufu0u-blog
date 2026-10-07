@@ -84,3 +84,6 @@ src/assets/*
 src/config/FooterConfig.html
 /public/
 *.local.md
+
+# Local writing studio drafts, deleted-content backups and job state
+.admin-state/

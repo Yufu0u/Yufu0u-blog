@@ -1,6 +1,7 @@
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
-import { resolveContentSource } from './resolve-source.mjs';
+import { resolveContentSource, WORKING_COPY_DIR } from './resolve-source.mjs';
+import { readDeploymentPolicy, assertDeploymentAllowed } from './deployment-policy.mjs';
 
 const root = process.cwd();
 const production = process.argv.includes('--production');
@@ -35,4 +36,10 @@ if (resolved.source.type === 'git') {
   }
 }
 const result = spawnSync(process.execPath, [path.join(root, 'scripts/content/sync.mjs')], { cwd: root, env, stdio: 'inherit' });
+if (result.status === 0 && production) {
+  try {
+    const contentRoot = resolved.source.type === 'path' ? path.resolve(root, resolved.source.path) : path.join(root, WORKING_COPY_DIR);
+    assertDeploymentAllowed(await readDeploymentPolicy(contentRoot));
+  } catch (error) { console.error('[content] ' + error.message); process.exit(1); }
+}
 process.exit(result.status ?? 1);

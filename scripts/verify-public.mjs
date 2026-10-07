@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 const files = execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
 assert.ok(files.length,'Public repository has staged or committed files');
 for(const file of files){
-  assert.ok(!/^(src\/(content|data|user)\/|public\/|\.content-src\/|\.content-backup\/|dist\/|\.env(?:\.|$))/.test(file) || file==='.env.example',`Private or generated file tracked: ${file}`);
+  assert.ok(!/^(src\/(content|data|user)\/|public\/|\.content-src\/|\.content-backup\/|\.admin-state\/|dist\/|\.env(?:\.|$))/.test(file) || file==='.env.example',`Private or generated file tracked: ${file}`);
   assert.ok(!/\.local\.md$/.test(file),`Local document tracked: ${file}`);
   if(!fs.existsSync(file)) continue;
   const text=fs.readFileSync(file,'utf8');

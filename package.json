@@ -19,6 +19,9 @@
     "tailwindcss-4"
   ],
   "scripts": {
+    "admin": "node scripts/admin/server.mjs --open",
+    "admin:serve": "node scripts/admin/server.mjs",
+    "admin:test": "node --test scripts/admin/admin.test.mjs",
     "dev": "node scripts/content/prepare.mjs && node scripts/icons/generate-local-icons.mjs && node scripts/images/generate-moment-thumbnails.mjs && astro dev",
     "start": "node scripts/content/prepare.mjs && node scripts/icons/generate-local-icons.mjs && node scripts/images/generate-moment-thumbnails.mjs && astro dev",
     "check": "node scripts/content/prepare.mjs && astro check",
