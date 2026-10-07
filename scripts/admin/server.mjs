@@ -37,7 +37,7 @@ async function jsonBody(req) {
 }
 async function yamlConfig(root, name) {
   try { return parse(await fs.readFile(await safePath(root, `config/${name}.yaml`), 'utf8')) ?? {}; }
-  catch (error) { if (error.code === 'ENOENT') return {}; throw error; }
+  catch (error) { if (error.code === 'ENOENT' || error.name === 'YAMLParseError') return {}; throw error; }
 }
 export async function createAdminServer({ contentRoot, themeRoot, stateRoot, publisherFactory = createPublisher }) {
   contentRoot = await fs.realpath(contentRoot);

@@ -106,6 +106,29 @@ test('HTTP APIs require local Host, session and CSRF; previews do not execute em
 });
 
 const git = (cwd, ...args) => execFileSync('git', args, { cwd, encoding: 'utf8', windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+
+test('malformed site or profile YAML does not prevent launching the studio repair screen', async t => {
+  const { root, theme, state } = await fixture(t);
+  await fs.mkdir(path.join(root, 'config'), { recursive: true });
+  for (const name of ['site', 'profile']) await fs.writeFile(path.join(root, 'config', name + '.yaml'), 'title: [broken');
+  const { server } = await createAdminServer({ contentRoot: root, themeRoot: theme, stateRoot: state, publisherFactory: () => ({ busy: false }) });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  t.after(() => new Promise(resolve => { server.closeAllConnections(); server.close(resolve); }));
+  const origin = `http://127.0.0.1:${server.address().port}`;
+  const page = await fetch(origin + '/admin/'); assert.equal(page.status, 200);
+  const cookie = page.headers.get('set-cookie').split(';')[0];
+  const bootstrap = await (await fetch(origin + '/api/bootstrap', { headers: { Cookie: cookie } })).json();
+  const headers = { Cookie: cookie, Origin: origin, 'X-Admin-CSRF': bootstrap.csrf, 'Content-Type': 'application/json' };
+  for (const name of ['site', 'profile']) {
+    const current = await (await fetch(origin + '/api/setting?name=' + name, { headers })).json();
+    assert.match(current.error, /YAML/);
+    const raw = name === 'site' ? 'title: 已修复网站\n' : 'name: 已修复博主\n';
+    const saved = await fetch(origin + '/api/settings/save', { method: 'POST', headers, body: JSON.stringify({ name, revision: current.revision, raw }) });
+    assert.equal(saved.status, 200);
+  }
+  const updated = await (await fetch(origin + '/api/bootstrap', { headers })).json();
+  assert.equal(updated.title, '已修复网站'); assert.equal(updated.author, '已修复博主');
+});
 async function waitJob(publisher) {
   const deadline = Date.now() + 30_000;
   while (publisher.busy && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 30));
